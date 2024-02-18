@@ -14,19 +14,23 @@ namespace InventoryTools.Logic.Filters
         public override FilterType AvailableIn { get; set; } =
             FilterType.SearchFilter | FilterType.SortingFilter | FilterType.GameItemFilter | FilterType.HistoryFilter;
         
-        public override bool? FilterItem(FilterConfiguration configuration, InventoryItem item)
+        public override bool? FilterItem(bool? filterValue, InventoryItem item)
         {
-            return FilterItem(configuration, item.Item);
+            return FilterItem(filterValue, item.Item);
         }
 
-        public override bool? FilterItem(FilterConfiguration configuration, ItemEx item)
+        public override bool? FilterItem(bool? filterValue, ItemEx item)
         {
-            var currentValue = CurrentValue(configuration);
-            if (currentValue == null)
+            if (filterValue == null)
             {
                 return null;
             }
-            return currentValue.Value && item.CanBeDesynthed || !currentValue.Value && !item.CanBeDesynthed;
+            return filterValue.Value && item.CanBeDesynthed || !filterValue.Value && !item.CanBeDesynthed;
+        }
+
+        public override bool? FilterItem(bool? filterValue, InventoryChange item)
+        {
+            return FilterItem(filterValue, item.InventoryItem);
         }
     }
 }
